@@ -1,14 +1,21 @@
 const socket = io({
     path: '/api/socketio',
     transports: ['polling'],
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
   });
   
   socket.on('connect_error', (error) => {
     console.error('Connection error:', error);
+    console.error('Error details:', error.description);
   });
   
   socket.on('connect', () => {
     console.log('Connected to server');
+  });
+  
+  socket.on('disconnect', (reason) => {
+    console.log('Disconnected:', reason);
   });
   
   let canvas, ctx;

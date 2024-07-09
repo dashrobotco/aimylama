@@ -38,7 +38,18 @@ const ioHandler = (req, res) => {
     console.log('socket.io already running');
   }
 
-  res.end();
+  res.socket.server.io.engine.on('connection_error', (err) => {
+    console.log('Connection error:', err);
+  });
+
+  if (req.method === 'POST') {
+    console.log('Received POST request:', req.url);
+    req.on('data', (chunk) => {
+      console.log('Request body:', chunk.toString());
+    });
+  }
+
+  res.socket.server.io.engine.handleRequest(req, res);
 };
 
 export const config = {
@@ -46,7 +57,6 @@ export const config = {
     bodyParser: false,
     externalResolver: true,
   },
-  maxDuration: 60,  // This sets the function timeout to 60 seconds
 };
 
 export default ioHandler;
