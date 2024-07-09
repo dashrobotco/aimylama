@@ -1,5 +1,5 @@
 const socket = io({
-    path: '/api/socketio'
+    path: '/api/socketio',
   });
   
   let canvas, ctx;
