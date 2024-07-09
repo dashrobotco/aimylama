@@ -1,37 +1,26 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require("socket.io");
 const path = require('path');
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  transports: ['polling'],
-  allowUpgrades: false
-});
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/api/hello', (req, res) => {
+  res.json({ message: 'Hello from the server!' });
 });
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.emit('welcome', 'Welcome to the server!');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = server; // Export for Vercel
+module.exports = app; // Export for Vercel
