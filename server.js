@@ -5,15 +5,13 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  transports: ['polling'],
+  allowUpgrades: false
+});
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve Socket.IO client library
-app.get('/socket.io/socket.io.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'node_modules', 'socket.io', 'client-dist', 'socket.io.js'));
-});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -25,6 +23,7 @@ app.get('/api/health', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+  socket.emit('welcome', 'Welcome to the server!');
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
@@ -35,5 +34,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// For Vercel serverless functions
-module.exports = app;
+module.exports = server; // Export for Vercel
