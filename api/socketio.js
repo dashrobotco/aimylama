@@ -1,6 +1,8 @@
 import { Server } from 'socket.io';
 
 const ioHandler = (req, res) => {
+  console.log('Received request for Socket.IO');
+
   if (!res.socket.server.io) {
     console.log('*First use, starting socket.io');
 
@@ -12,8 +14,8 @@ const ioHandler = (req, res) => {
         origin: '*',
         methods: ['GET', 'POST'],
       },
-      pingTimeout: 60000, // 60 seconds
-      pingInterval: 25000 // 25 seconds
+      pingTimeout: 60000,
+      pingInterval: 25000
     });
 
     io.on('connection', (socket) => {
@@ -25,12 +27,8 @@ const ioHandler = (req, res) => {
     });
 
     res.socket.server.io = io;
-  }
-
-  if (res.socket.server.io) {
-    console.log('Socket is already running');
   } else {
-    console.log('Socket is initializing');
+    console.log('Socket.io already running');
   }
 
   res.end();
