@@ -1,6 +1,7 @@
 const socket = io({
-    path: '/api/socket'
+    path: '/api/socketio'
   });
+  
   let canvas, ctx;
   let playerId;
   

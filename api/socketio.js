@@ -1,10 +1,13 @@
-const { Server } = require('socket.io');
+import { Server } from 'socket.io';
 
 const ioHandler = (req, res) => {
   if (!res.socket.server.io) {
     console.log('*First use, starting socket.io');
 
-    const io = new Server(res.socket.server);
+    const io = new Server(res.socket.server, {
+      path: '/api/socketio',
+      addTrailingSlash: false,
+    });
 
     const players = new Map();
     const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
@@ -61,10 +64,14 @@ const ioHandler = (req, res) => {
     });
 
     res.socket.server.io = io;
-  } else {
-    console.log('socket.io already running');
   }
   res.end();
 };
 
-module.exports = ioHandler;
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default ioHandler;
