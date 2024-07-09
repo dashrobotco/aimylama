@@ -7,12 +7,30 @@ const ioHandler = (req, res) => {
     const io = new Server(res.socket.server, {
       path: '/api/socketio',
       addTrailingSlash: false,
+      transports: ['polling'], // Use only polling for now
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+      },
     });
 
     io.on('connection', (socket) => {
       console.log('A user connected:', socket.id);
 
-      // ... rest of your socket event handlers
+      socket.on('join', (playerName) => {
+        console.log('Player joined:', playerName);
+        // Your game logic here
+      });
+
+      socket.on('move', (direction) => {
+        console.log('Player moved:', direction);
+        // Your game logic here
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Player disconnected:', socket.id);
+        // Your game logic here
+      });
     });
 
     res.socket.server.io = io;

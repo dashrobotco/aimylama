@@ -1,5 +1,14 @@
 const socket = io({
     path: '/api/socketio',
+    transports: ['polling'],
+  });
+  
+  socket.on('connect_error', (error) => {
+    console.error('Connection error:', error);
+  });
+  
+  socket.on('connect', () => {
+    console.log('Connected to server');
   });
   
   let canvas, ctx;
@@ -14,40 +23,7 @@ const socket = io({
       }
   });
   
-  socket.on('gameState', (players) => {
-      document.getElementById('loading-screen').style.display = 'none';
-      document.getElementById('game-screen').style.display = 'block';
-      
-      if (!canvas) {
-          canvas = document.getElementById('game-canvas');
-          ctx = canvas.getContext('2d');
-          canvas.width = 800;
-          canvas.height = 600;
-          setupKeyboardControls();
-      }
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      for (const player of players) {
-          ctx.fillStyle = player.color;
-          ctx.fillRect(player.x, player.y, 50, 50);
-          
-          ctx.fillStyle = 'black';
-          ctx.font = '16px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(player.name, player.x + 25, player.y + 30);
-  
-          if (player.id === socket.id) {
-              playerId = player.id;
-          }
-      }
-  });
-  
-  socket.on('serverFull', () => {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('loading-screen').style.display = 'none';
-      document.getElementById('server-full').style.display = 'block';
-  });
+  // ... rest of your game logic
   
   function setupKeyboardControls() {
       document.addEventListener('keydown', (event) => {
