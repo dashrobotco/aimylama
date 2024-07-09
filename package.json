@@ -1,16 +1,16 @@
 {
   "name": "aimylama-mmo",
   "version": "1.0.0",
-  "description": "A simple multiplayer mini-game",
-  "main": "api/socketio.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node api/socketio.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
-    "socket.io": "^4.5.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "socket.io": "^4.5.1"
   },
-  "engines": {
-    "node": ">=14.0.0"
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
