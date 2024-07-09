@@ -1,6 +1,9 @@
 const socket = io({
     path: '/api/socketio',
     transports: ['polling'],
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    timeout: 20000
   });
   
   socket.on('connect_error', (error) => {
@@ -14,6 +17,11 @@ const socket = io({
   
   socket.on('disconnect', (reason) => {
     console.log('Disconnected:', reason);
+    if (reason === 'io server disconnect') {
+      // the disconnection was initiated by the server, you need to reconnect manually
+      socket.connect();
+    }
+    // else the socket will automatically try to reconnect
   });
   
   // Debug: Log all socket events
@@ -22,8 +30,10 @@ const socket = io({
     console.log('Emitting:', arguments);
     originalEmit.apply(socket, arguments);
   };
-
   
+  // Rest of your game logic...
+
+
   // ... rest of your game logic
   
   function setupKeyboardControls() {

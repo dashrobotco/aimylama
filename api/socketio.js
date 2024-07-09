@@ -25,6 +25,12 @@ const ioHandler = (req, res) => {
     res.socket.server.io = io;
   }
 
+  if (res.socket.server.io) {
+    console.log('Socket is already running');
+  } else {
+    console.log('Socket is initializing');
+  }
+
   res.end();
 };
 
