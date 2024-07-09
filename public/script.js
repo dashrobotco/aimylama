@@ -1,8 +1,6 @@
 const socket = io({
     path: '/api/socketio',
     transports: ['polling'],
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
   });
   
   socket.on('connect_error', (error) => {
@@ -18,17 +16,13 @@ const socket = io({
     console.log('Disconnected:', reason);
   });
   
-  let canvas, ctx;
-  let playerId;
-  
-  document.getElementById('play-button').addEventListener('click', () => {
-      const playerName = document.getElementById('player-name').value.trim();
-      if (playerName) {
-          document.getElementById('login-screen').style.display = 'none';
-          document.getElementById('loading-screen').style.display = 'block';
-          socket.emit('join', playerName);
-      }
-  });
+  // Debug: Log all socket events
+  const originalEmit = socket.emit;
+  socket.emit = function() {
+    console.log('Emitting:', arguments);
+    originalEmit.apply(socket, arguments);
+  };
+
   
   // ... rest of your game logic
   

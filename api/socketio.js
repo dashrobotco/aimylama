@@ -17,45 +17,20 @@ const ioHandler = (req, res) => {
     io.on('connection', (socket) => {
       console.log('A user connected:', socket.id);
 
-      socket.on('join', (playerName) => {
-        console.log('Player joined:', playerName);
-        // Your game logic here
-      });
-
-      socket.on('move', (direction) => {
-        console.log('Player moved:', direction);
-        // Your game logic here
-      });
-
       socket.on('disconnect', () => {
-        console.log('Player disconnected:', socket.id);
-        // Your game logic here
+        console.log('User disconnected:', socket.id);
       });
     });
 
     res.socket.server.io = io;
-  } else {
-    console.log('socket.io already running');
   }
 
-  res.socket.server.io.engine.on('connection_error', (err) => {
-    console.log('Connection error:', err);
-  });
-
-  if (req.method === 'POST') {
-    console.log('Received POST request:', req.url);
-    req.on('data', (chunk) => {
-      console.log('Request body:', chunk.toString());
-    });
-  }
-
-  res.socket.server.io.engine.handleRequest(req, res);
+  res.end();
 };
 
 export const config = {
   api: {
     bodyParser: false,
-    externalResolver: true,
   },
 };
 
