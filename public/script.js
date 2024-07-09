@@ -1,18 +1,28 @@
-const socket = io();
-
 const statusDiv = document.getElementById('status');
 
-socket.on('connect', () => {
-  statusDiv.textContent = 'Connected to server';
-  console.log('Connected to server');
-});
+function updateStatus(message) {
+  statusDiv.textContent = message;
+  console.log(message);
+}
 
-socket.on('disconnect', () => {
-  statusDiv.textContent = 'Disconnected from server';
-  console.log('Disconnected from server');
-});
+try {
+  const socket = io({
+    transports: ['websocket', 'polling']
+  });
 
-socket.on('connect_error', (error) => {
-  statusDiv.textContent = `Connection error: ${error.message}`;
-  console.error('Connection error:', error);
-});
+  socket.on('connect', () => {
+    updateStatus('Connected to server');
+  });
+
+  socket.on('disconnect', () => {
+    updateStatus('Disconnected from server');
+  });
+
+  socket.on('connect_error', (error) => {
+    updateStatus(`Connection error: ${error.message}`);
+    console.error('Connection error:', error);
+  });
+} catch (error) {
+  updateStatus(`Error initializing Socket.IO: ${error.message}`);
+  console.error('Error initializing Socket.IO:', error);
+}
