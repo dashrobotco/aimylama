@@ -1,43 +1,26 @@
 import { Server } from 'socket.io';
 
-const ioHandler = (req, res) => {
-  console.log('Received request for Socket.IO');
-
-  if (!res.socket.server.io) {
-    console.log('*First use, starting socket.io');
-
-    const io = new Server(res.socket.server, {
-      path: '/api/socketio',
-      addTrailingSlash: false,
-      transports: ['polling'],
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-      },
-      pingTimeout: 60000,
-      pingInterval: 25000
-    });
-
-    io.on('connection', (socket) => {
-      console.log('A user connected:', socket.id);
-
-      socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-      });
-    });
-
-    res.socket.server.io = io;
-  } else {
-    console.log('Socket.io already running');
+export default function ioHandler(req, res) {
+  if (res.socket.server.io) {
+    console.log('Socket already running');
+    res.end();
+    return;
   }
 
+  const io = new Server(res.socket.server);
+  res.socket.server.io = io;
+
+  io.on('connection', (socket) => {
+    console.log('New client connected');
+    socket.on('disconnect', () => console.log('Client disconnected'));
+  });
+
+  console.log('Socket initialized');
   res.end();
-};
+}
 
 export const config = {
   api: {
     bodyParser: false,
   },
 };
-
-export default ioHandler;

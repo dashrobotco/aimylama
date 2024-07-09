@@ -5,25 +5,7 @@
       { "src": "public/**", "use": "@vercel/static" }
     ],
     "routes": [
-      { 
-        "src": "/api/socketio",
-        "dest": "api/socketio.js"
-      },
-      { 
-        "src": "/api/socketio/(.*)",
-        "dest": "api/socketio.js"
-      },
-      {
-        "src": "/api/health",
-        "dest": "api/health.js"
-      },
-      {
-        "src": "/api/socket-test",
-        "dest": "api/socket-test.js"
-      },
-      { 
-        "src": "/(.*)", 
-        "dest": "/public/$1" 
-      }
+      { "src": "/api/socketio", "dest": "api/socketio.js" },
+      { "src": "/(.*)", "dest": "/public/$1" }
     ]
   }
