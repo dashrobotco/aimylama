@@ -1,18 +1,27 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const { Server } = require("socket.io");
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server);
 
 app.use(express.static('public'));
+
+// Serve socket.io.js
+app.get('/socket.io/socket.io.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'node_modules/socket.io/client-dist/socket.io.js'));
+});
 
 const players = new Map();
 const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
 
 io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+
     socket.on('join', (playerName) => {
+        console.log('Player joined:', playerName);
         if (players.size >= 5) {
             socket.emit('serverFull');
             return;
@@ -53,6 +62,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        console.log('Player disconnected:', socket.id);
         players.delete(socket.id);
         io.emit('gameState', Array.from(players.values()));
     });
