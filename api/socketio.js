@@ -7,7 +7,7 @@ const ioHandler = (req, res) => {
     const io = new Server(res.socket.server, {
       path: '/api/socketio',
       addTrailingSlash: false,
-      transports: ['polling'], // Use only polling for now
+      transports: ['polling'],
       cors: {
         origin: '*',
         methods: ['GET', 'POST'],
@@ -44,7 +44,9 @@ const ioHandler = (req, res) => {
 export const config = {
   api: {
     bodyParser: false,
+    externalResolver: true,
   },
+  maxDuration: 60,  // This sets the function timeout to 60 seconds
 };
 
 export default ioHandler;
